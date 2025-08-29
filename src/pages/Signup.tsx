@@ -22,7 +22,7 @@ const Signup = () => {
         <Card className="w-full max-w-md p-8 shadow-medium">
           <div className="text-center mb-8">
             <Sprout className="h-12 w-12 text-primary mx-auto mb-4" />
-            <h1 className="text-2xl font-bold text-foreground">Join FarmLink</h1>
+            <h1 className="text-2xl font-bold text-foreground">Join AzeezFarmlink</h1>
             <p className="text-muted-foreground">Create your account to get started</p>
           </div>
 

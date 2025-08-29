@@ -13,7 +13,7 @@ const Navigation = () => {
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
             <Sprout className="h-8 w-8 text-primary" />
-            <span className="text-xl font-bold text-foreground">FarmLink</span>
+            <span className="text-xl font-bold text-foreground">AzeezFarmlink</span>
           </Link>
 
           {/* Desktop Navigation */}

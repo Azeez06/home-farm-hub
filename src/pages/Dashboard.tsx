@@ -196,7 +196,7 @@ const Dashboard = () => {
                   <Package className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                   <h3 className="text-lg font-medium text-foreground mb-2">No products yet</h3>
                   <p className="text-muted-foreground">
-                    Add your first product to get started selling on FarmLink
+                    Add your first product to get started selling on AzeezFarmlink
                   </p>
                 </div>
               )}

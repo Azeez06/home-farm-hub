@@ -16,7 +16,7 @@ const Index = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">
-              How FarmLink Works
+              How AzeezFarmlink Works
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               Connecting local farmers with their community has never been easier
@@ -72,7 +72,7 @@ const Index = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">
-              Why Choose FarmLink?
+              Why Choose AzeezFarmlink?
             </h2>
           </div>
 
@@ -146,7 +146,7 @@ const Index = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
-              <h3 className="font-bold text-lg mb-4 text-foreground">FarmLink</h3>
+              <h3 className="font-bold text-lg mb-4 text-foreground">AzeezFarmlink</h3>
               <p className="text-muted-foreground">
                 Connecting local farmers with their community for fresh, sustainable produce.
               </p>
@@ -162,7 +162,7 @@ const Index = () => {
             <div>
               <h4 className="font-semibold mb-4 text-foreground">For Farmers</h4>
               <div className="space-y-2 text-muted-foreground">
-                <div><Link to="/signup" className="hover:text-primary transition-colors">Join FarmLink</Link></div>
+                <div><Link to="/signup" className="hover:text-primary transition-colors">Join AzeezFarmlink</Link></div>
                 <div><Link to="/dashboard" className="hover:text-primary transition-colors">Farmer Dashboard</Link></div>
                 <div><Link to="/contact" className="hover:text-primary transition-colors">Support</Link></div>
               </div>
@@ -177,7 +177,7 @@ const Index = () => {
             </div>
           </div>
           <div className="border-t border-border mt-8 pt-8 text-center text-muted-foreground">
-            <p>&copy; 2024 FarmLink. All rights reserved.</p>
+            <p>&copy; 2024 AzeezFarmlink. All rights reserved.</p>
           </div>
         </div>
       </footer>

@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ArrowRight, Leaf, Users, ShoppingBag } from "lucide-react";
 import { Link } from "react-router-dom";
-import heroImage from "@/assets/hero-farmlink.jpg";
+import heroImage from "@/assets/hero-azeezfarmlink.jpg";
 
 const HeroSection = () => {
   return (
