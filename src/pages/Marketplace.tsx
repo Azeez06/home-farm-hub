@@ -11,8 +11,11 @@ const Marketplace = () => {
   const { products, loading, error } = useProducts();
   const [searchTerm, setSearchTerm] = useState("");
 
-  // Default placeholder image for products without images
-  const getProductImage = () => {
+  // Get product image or fallback to placeholder
+  const getProductImage = (product: any) => {
+    if (product.image_url) {
+      return product.image_url;
+    }
     return "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=300&h=300&fit=crop";
   };
 
@@ -130,7 +133,7 @@ const Marketplace = () => {
               <Card key={product.id} className="overflow-hidden hover:shadow-medium transition-all duration-300 group">
                 <div className="relative overflow-hidden">
                   <img 
-                    src={getProductImage()} 
+                    src={getProductImage(product)} 
                     alt={product["product-name"]}
                     className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
                   />
