@@ -3,79 +3,55 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Search, Filter, ShoppingCart, MapPin, Star } from "lucide-react";
-
-// Mock product data
-const mockProducts = [
-  {
-    id: 1,
-    name: "Organic Tomatoes",
-    price: 4.99,
-    unit: "lb",
-    farmer: "Green Valley Farm",
-    location: "5 miles away",
-    rating: 4.8,
-    image: "https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=300&h=300&fit=crop",
-    description: "Fresh, vine-ripened organic tomatoes"
-  },
-  {
-    id: 2,
-    name: "Fresh Carrots",
-    price: 2.99,
-    unit: "bunch",
-    farmer: "Sunrise Organics",
-    location: "3 miles away", 
-    rating: 4.9,
-    image: "https://images.unsplash.com/photo-1445282768818-728615cc910a?w=300&h=300&fit=crop",
-    description: "Sweet, crunchy carrots straight from the ground"
-  },
-  {
-    id: 3,
-    name: "Farm Fresh Eggs",
-    price: 6.99,
-    unit: "dozen",
-    farmer: "Happy Hen Farm",
-    location: "2 miles away",
-    rating: 4.7,
-    image: "https://images.unsplash.com/photo-1506976785307-8732e854ad03?w=300&h=300&fit=crop",
-    description: "Free-range chicken eggs from happy hens"
-  },
-  {
-    id: 4,
-    name: "Organic Spinach",
-    price: 3.49,
-    unit: "bunch",
-    farmer: "Garden Grove",
-    location: "4 miles away",
-    rating: 4.6,
-    image: "https://images.unsplash.com/photo-1576045057995-568f588f82fb?w=300&h=300&fit=crop",
-    description: "Tender, nutrient-rich organic spinach"
-  },
-  {
-    id: 5,
-    name: "Sweet Corn",
-    price: 1.99,
-    unit: "ear",
-    farmer: "Corn Field Farm",
-    location: "6 miles away",
-    rating: 4.5,
-    image: "https://images.unsplash.com/photo-1551754655-cd27e38d2076?w=300&h=300&fit=crop",
-    description: "Sweet, juicy corn picked fresh this morning"
-  },
-  {
-    id: 6,
-    name: "Red Bell Peppers",
-    price: 5.99,
-    unit: "lb",
-    farmer: "Pepper Paradise",
-    location: "3 miles away",
-    rating: 4.8,
-    image: "https://images.unsplash.com/photo-1563565375-f3fdfdbefa83?w=300&h=300&fit=crop",
-    description: "Crisp, sweet red bell peppers"
-  }
-];
+import { Search, Filter, ShoppingCart, MapPin, Star, Loader2 } from "lucide-react";
+import { useProducts } from "@/hooks/useProducts";
+import { useState } from "react";
 
 const Marketplace = () => {
+  const { products, loading, error } = useProducts();
+  const [searchTerm, setSearchTerm] = useState("");
+
+  // Default placeholder image for products without images
+  const getProductImage = () => {
+    return "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=300&h=300&fit=crop";
+  };
+
+  // Filter products based on search term
+  const filteredProducts = products.filter(product =>
+    product["product-name"].toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (product.description && product.description.toLowerCase().includes(searchTerm.toLowerCase()))
+  );
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navigation />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="flex items-center justify-center h-64">
+            <Loader2 className="h-8 w-8 animate-spin" />
+            <span className="ml-2">Loading products...</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navigation />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="text-center text-red-500">
+            <p>Error loading products: {error}</p>
+            <Button onClick={() => window.location.reload()} className="mt-4">
+              Try Again
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
@@ -97,8 +73,10 @@ const Marketplace = () => {
             <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
               <Input 
-                placeholder="Search for products, farmers, or locations..." 
+                placeholder="Search for products..." 
                 className="pl-10"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
             
@@ -122,10 +100,9 @@ const Marketplace = () => {
                   <SelectValue placeholder="Sort by" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="distance">Distance</SelectItem>
                   <SelectItem value="price-low">Price: Low to High</SelectItem>
                   <SelectItem value="price-high">Price: High to Low</SelectItem>
-                  <SelectItem value="rating">Rating</SelectItem>
+                  <SelectItem value="newest">Newest First</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -133,67 +110,82 @@ const Marketplace = () => {
         </div>
 
         {/* Products Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {mockProducts.map((product) => (
-            <Card key={product.id} className="overflow-hidden hover:shadow-medium transition-all duration-300 group">
-              <div className="relative overflow-hidden">
-                <img 
-                  src={product.image} 
-                  alt={product.name}
-                  className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
-                />
-                <div className="absolute top-2 right-2 bg-white/90 backdrop-blur-sm rounded-full px-2 py-1 text-sm font-medium">
-                  ${product.price}/${product.unit}
-                </div>
-              </div>
-              
-              <div className="p-4">
-                <h3 className="font-semibold text-lg mb-2 text-foreground">
-                  {product.name}
-                </h3>
-                
-                <p className="text-muted-foreground text-sm mb-3 line-clamp-2">
-                  {product.description}
-                </p>
-                
-                <div className="flex items-center gap-2 mb-2">
-                  <MapPin className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-sm text-muted-foreground">
-                    {product.farmer} • {product.location}
-                  </span>
-                </div>
-                
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-1">
-                    <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                    <span className="text-sm font-medium">{product.rating}</span>
-                  </div>
-                  <span className="text-lg font-bold text-primary">
+        {filteredProducts.length === 0 ? (
+          <div className="text-center py-12">
+            <p className="text-muted-foreground mb-4">
+              {products.length === 0 
+                ? "No products available yet. Check back later!"
+                : "No products match your search."
+              }
+            </p>
+            {searchTerm && (
+              <Button variant="outline" onClick={() => setSearchTerm("")}>
+                Clear Search
+              </Button>
+            )}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {filteredProducts.map((product) => (
+              <Card key={product.id} className="overflow-hidden hover:shadow-medium transition-all duration-300 group">
+                <div className="relative overflow-hidden">
+                  <img 
+                    src={getProductImage()} 
+                    alt={product["product-name"]}
+                    className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                  <div className="absolute top-2 right-2 bg-white/90 backdrop-blur-sm rounded-full px-2 py-1 text-sm font-medium">
                     ${product.price}
-                  </span>
+                  </div>
                 </div>
                 
-                <Button className="w-full">
-                  <ShoppingCart className="h-4 w-4 mr-2" />
-                  Add to Cart
-                </Button>
-              </div>
-            </Card>
-          ))}
-        </div>
+                <div className="p-4">
+                  <h3 className="font-semibold text-lg mb-2 text-foreground">
+                    {product["product-name"]}
+                  </h3>
+                  
+                  <p className="text-muted-foreground text-sm mb-3 line-clamp-2">
+                    {product.description || "Fresh farm product"}
+                  </p>
+                  
+                  <div className="flex items-center gap-2 mb-2">
+                    <MapPin className="h-4 w-4 text-muted-foreground" />
+                    <span className="text-sm text-muted-foreground">
+                      Local Farm • Available now
+                    </span>
+                  </div>
+                  
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-1">
+                      <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                      <span className="text-sm font-medium">New</span>
+                    </div>
+                    <span className="text-lg font-bold text-primary">
+                      ${product.price}
+                    </span>
+                  </div>
+                  
+                  {product.quantity && product.quantity > 0 ? (
+                    <Button className="w-full">
+                      <ShoppingCart className="h-4 w-4 mr-2" />
+                      Add to Cart ({product.quantity} available)
+                    </Button>
+                  ) : (
+                    <Button className="w-full" disabled>
+                      Out of Stock
+                    </Button>
+                  )}
+                </div>
+              </Card>
+            ))}
+          </div>
+        )}
 
-        {/* Load More */}
-        <div className="text-center mt-12">
-          <Button variant="outline" size="lg">
-            Load More Products
-          </Button>
-        </div>
-
-        {/* Info Note */}
-        <div className="mt-12 p-6 bg-muted/50 rounded-lg">
-          <p className="text-center text-muted-foreground">
-            <strong>Note:</strong> This marketplace displays sample data. 
-            Connect to Supabase to enable real product listings, shopping cart, and checkout functionality.
+        {/* Success Note */}
+        <div className="mt-12 p-6 bg-green-50 border border-green-200 rounded-lg">
+          <p className="text-center text-green-800">
+            <strong>✅ Connected to Supabase!</strong> This marketplace now displays real products from your database.
+            {products.length > 0 ? ` Showing ${products.length} product(s).` : " Add some products to see them here!"}
           </p>
         </div>
       </div>
