@@ -5,10 +5,12 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Search, Filter, ShoppingCart, MapPin, Star, Loader2 } from "lucide-react";
 import { useProducts } from "@/hooks/useProducts";
+import { useCart } from "@/contexts/CartContext";
 import { useState } from "react";
 
 const Marketplace = () => {
   const { products, loading, error } = useProducts();
+  const { addToCart } = useCart();
   const [searchTerm, setSearchTerm] = useState("");
 
   // Get product image or fallback to placeholder
@@ -169,7 +171,7 @@ const Marketplace = () => {
                   </div>
                   
                   {product.quantity && product.quantity > 0 ? (
-                    <Button className="w-full">
+                    <Button className="w-full" onClick={() => addToCart(product)}>
                       <ShoppingCart className="h-4 w-4 mr-2" />
                       Add to Cart ({product.quantity} available)
                     </Button>

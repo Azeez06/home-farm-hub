@@ -4,37 +4,20 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { Minus, Plus, Trash2, ShoppingBag, CreditCard } from "lucide-react";
-
-// Mock cart data
-const cartItems = [
-  {
-    id: 1,
-    name: "Organic Tomatoes",
-    price: 4.99,
-    quantity: 2,
-    farmer: "Green Valley Farm",
-    image: "https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=150&h=150&fit=crop"
-  },
-  {
-    id: 2,
-    name: "Farm Fresh Eggs",
-    price: 6.99,
-    quantity: 1,
-    farmer: "Happy Hen Farm",
-    image: "https://images.unsplash.com/photo-1506976785307-8732e854ad03?w=150&h=150&fit=crop"
-  },
-  {
-    id: 3,
-    name: "Organic Spinach",
-    price: 3.49,
-    quantity: 3,
-    farmer: "Garden Grove",
-    image: "https://images.unsplash.com/photo-1576045057995-568f588f82fb?w=150&h=150&fit=crop"
-  }
-];
+import { useCart } from "@/contexts/CartContext";
 
 const Cart = () => {
-  const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  const { items: cartItems, updateQuantity, removeFromCart, getTotalPrice } = useCart();
+  
+  // Get product image or fallback
+  const getProductImage = (product: any) => {
+    if (product.image_url) {
+      return product.image_url;
+    }
+    return "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=150&h=150&fit=crop";
+  };
+
+  const subtotal = getTotalPrice();
   const deliveryFee = 4.99;
   const total = subtotal + deliveryFee;
 
@@ -63,32 +46,45 @@ const Cart = () => {
                 {cartItems.map((item) => (
                   <div key={item.id} className="flex items-center gap-4 pb-6 border-b border-border last:border-b-0 last:pb-0">
                     <img 
-                      src={item.image}
-                      alt={item.name}
+                      src={getProductImage(item.product)}
+                      alt={item.product["product-name"]}
                       className="w-20 h-20 rounded-lg object-cover"
                     />
                     
                     <div className="flex-1">
-                      <h3 className="font-medium text-foreground">{item.name}</h3>
-                      <p className="text-sm text-muted-foreground">{item.farmer}</p>
-                      <p className="text-lg font-semibold text-primary mt-1">${item.price}</p>
+                      <h3 className="font-medium text-foreground">{item.product["product-name"]}</h3>
+                      <p className="text-sm text-muted-foreground">Local Farm</p>
+                      <p className="text-lg font-semibold text-primary mt-1">${item.product.price}</p>
                     </div>
 
                     <div className="flex items-center gap-3">
-                      <Button variant="outline" size="sm">
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                      >
                         <Minus className="h-4 w-4" />
                       </Button>
                       <span className="w-12 text-center font-medium">{item.quantity}</span>
-                      <Button variant="outline" size="sm">
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                      >
                         <Plus className="h-4 w-4" />
                       </Button>
                     </div>
 
                     <div className="text-right">
                       <p className="font-semibold text-foreground">
-                        ${(item.price * item.quantity).toFixed(2)}
+                        ${(item.product.price * item.quantity).toFixed(2)}
                       </p>
-                      <Button variant="ghost" size="sm" className="mt-2 text-destructive hover:text-destructive">
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        className="mt-2 text-destructive hover:text-destructive"
+                        onClick={() => removeFromCart(item.id)}
+                      >
                         <Trash2 className="h-4 w-4" />
                       </Button>
                     </div>
